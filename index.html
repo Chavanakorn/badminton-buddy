@@ -16,7 +16,7 @@
         }
 
         body {
-            font-family: 'Roboto', 'Arial', sans-serif;
+            font-family: 'Noto Sans Thai', sans-serif;
             background-color: #e0f7fa;
             color: #004d40;
             min-height: 100vh;
@@ -208,7 +208,7 @@
 </head>
 <body>
 
-<h1>Badminton Buddy <span>V.1.0.0</span></h1>
+<h1>Badminton Buddy <span>V.1.0.1</span></h1>
 
 <div class="container">
     <h2>เพิ่มสมาชิก</h2>
@@ -233,46 +233,32 @@
 <div id="toast"></div>
 
 <script>
-    let members = [];
+    let members = JSON.parse(localStorage.getItem('members')) || [];
 
-    // โหลดรายชื่อสมาชิกจาก Local Storage เมื่อหน้าเว็บโหลด
-    window.onload = function () {
-        if (localStorage.getItem('members')) {
-            members = JSON.parse(localStorage.getItem('members'));
-            updateMemberList();
-        }
-    }
-
-    function showToast(message) {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.className = "show";
-        setTimeout(function () {
-            toast.className = toast.className.replace("show", "");
-        }, 3000);
-    }
+    window.onload = updateMemberList;
 
     function addMember() {
         const nameInput = document.getElementById('memberName');
         const name = nameInput.value.trim();
-        if (name && !members.includes(name)) {
-            members.push(name);
-            nameInput.value = '';
-            updateMemberList();
-            saveMembers();
-            showToast('เพิ่มสมาชิกเรียบร้อยแล้ว');
-        } else if (!name) {
-            showToast('กรุณาใส่ชื่อสมาชิก');
+        if (!name) return alert('กรุณาใส่ชื่อสมาชิก');
+
+        if (members.includes(name)) {
+            alert('ชื่อสมาชิกนี้มีอยู่แล้ว');
         } else {
-            showToast('สมาชิกนี้มีอยู่ในรายการแล้ว');
+            members.push(name);
+            saveAndUpdate();
+            nameInput.value = '';
         }
     }
 
     function removeMember(name) {
         members = members.filter(member => member !== name);
+        saveAndUpdate();
+    }
+
+    function saveAndUpdate() {
+        localStorage.setItem('members', JSON.stringify(members));
         updateMemberList();
-        saveMembers();
-        showToast('ลบสมาชิกเรียบร้อยแล้ว');
     }
 
     function updateMemberList() {
@@ -289,100 +275,50 @@
         });
     }
 
-    function saveMembers() {
-        localStorage.setItem('members', JSON.stringify(members));
-    }
-
     function shuffleArray(array) {
-        // ฟังก์ชันสำหรับสุ่มลำดับของอาร์เรย์
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
+        return array.sort(() => Math.random() - 0.5);
     }
 
     function generateMatches() {
-        if (members.length < 4) {
-            alert('ต้องมีสมาชิกอย่างน้อย 4 คนเพื่อสร้างทีม');
-            return;
-        }
+        if (members.length < 4) return alert('ต้องมีสมาชิกอย่างน้อย 4 คนเพื่อสร้างทีม');
 
-        const totalPlayers = members.length;
-        const matchCount = Math.ceil(totalPlayers / 4); // จำนวนแมทช์ที่ต้องการ
-        let allPlayers = [...members];
-        shuffleArray(allPlayers);
-
+        let players = shuffleArray([...members]);
         const matches = [];
 
-        // สร้างแมทช์ที่มีผู้เล่นไม่ซ้ำกันก่อน
-        for (let i = 0; i < matchCount; i++) {
-            let matchPlayers = allPlayers.splice(0, 4);
+        while (players.length) {
+            let matchPlayers = players.splice(0, 4);
 
-            // ถ้าผู้เล่นไม่พอ 4 คน ให้เก็บไว้ก่อน
             if (matchPlayers.length < 4) {
-                allPlayers = matchPlayers.concat(allPlayers);
-                break;
+                const needed = 4 - matchPlayers.length;
+                const extraPlayers = shuffleArray([...members.filter(p => !matchPlayers.includes(p))]).slice(0, needed);
+                matchPlayers = matchPlayers.concat(extraPlayers);
             }
 
-            let teams = [];
-            teams.push(matchPlayers.slice(0, 2));
-            teams.push(matchPlayers.slice(2, 4));
-            matches.push({teams: teams, players: matchPlayers});
+            matches.push({
+                team1: matchPlayers.slice(0, 2),
+                team2: matchPlayers.slice(2, 4),
+            });
         }
 
-        // จัดการกับผู้เล่นที่เหลือ
-        while (allPlayers.length > 0) {
-            for (let i = 0; i < matches.length; i++) {
-                let neededPlayers = 4 - matches[i].players.length;
-                if (neededPlayers > 0 && allPlayers.length > 0) {
-                    let player = allPlayers.shift();
-                    matches[i].players.push(player);
+        displayMatches(matches);
+    }
 
-                    // เพิ่มผู้เล่นเข้าไปในทีมที่มีสมาชิกน้อยกว่า
-                    if (matches[i].teams[0].length < 2) {
-                        matches[i].teams[0].push(player);
-                    } else if (matches[i].teams[1].length < 2) {
-                        matches[i].teams[1].push(player);
-                    }
-                }
-            }
-
-            // ถ้ายังมีผู้เล่นเหลือแต่แมทช์เต็มแล้ว ให้สร้างแมทช์ใหม่
-            if (allPlayers.length >= 4) {
-                let matchPlayers = allPlayers.splice(0, 4);
-                let teams = [];
-                teams.push(matchPlayers.slice(0, 2));
-                teams.push(matchPlayers.slice(2, 4));
-                matches.push({teams: teams, players: matchPlayers});
-            } else if (allPlayers.length > 0) {
-                // ถ้าผู้เล่นไม่พอที่จะสร้างแมทช์ใหม่ ให้สุ่มผู้เล่นจากแมทช์ก่อนหน้า
-                let matchPlayers = allPlayers.splice(0, allPlayers.length);
-                let neededPlayers = 4 - matchPlayers.length;
-                let candidates = members.filter(m => !matchPlayers.includes(m));
-                shuffleArray(candidates);
-                for (let i = 0; i < neededPlayers; i++) {
-                    matchPlayers.push(candidates[i % candidates.length]);
-                }
-                let teams = [];
-                teams.push(matchPlayers.slice(0, 2));
-                teams.push(matchPlayers.slice(2, 4));
-                matches.push({teams: teams, players: matchPlayers});
-            }
-        }
-
-        // แสดงผลแมทช์ที่สุ่มได้
+    function displayMatches(matches) {
         const matchList = document.getElementById('matches');
         matchList.innerHTML = '';
+
         matches.forEach((match, index) => {
             const li = document.createElement('li');
             li.innerHTML = `<strong>แมทช์ที่ ${index + 1}</strong>`;
             const ul = document.createElement('ul');
 
-            match.teams.forEach((team, idx) => {
-                const teamLi = document.createElement('li');
-                teamLi.textContent = `ทีม ${idx + 1}: ${team.join(' และ ')}`;
-                ul.appendChild(teamLi);
-            });
+            const team1 = document.createElement('li');
+            team1.textContent = `ทีม 1: ${match.team1.join(' และ ')}`;
+            ul.appendChild(team1);
+
+            const team2 = document.createElement('li');
+            team2.textContent = `ทีม 2: ${match.team2.join(' และ ')}`;
+            ul.appendChild(team2);
 
             li.appendChild(ul);
             matchList.appendChild(li);
