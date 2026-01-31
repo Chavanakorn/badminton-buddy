@@ -3,328 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <title>สุ่มทีมคู่แบดมินตัน - Badminton Buddy</title>
-    <meta name="version" content="1.0.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="version" content="1.2.0">
     <meta name="description" content="เว็บสำหรับสุ่มทีมแบดมินตันอัตโนมัติ">
     <meta name="keywords" content="แบดมินตัน, สุ่มทีม, Badminton, ทีมคู่, กีฬา">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
-    <style>
-        /* รีเซ็ตการตั้งค่าพื้นฐานของเบราว์เซอร์ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Noto Sans Thai', sans-serif;
-            background-color: #e0f7fa;
-            color: #004d40;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            font-size: 36px;
-            color: #00796b;
-            display: flex;
-            align-items: center;
-        }
-
-        h1 span {
-            font-size: 18px;
-            color: #004d40;
-            margin-left: 10px;
-        }
-
-        h1 img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(0, 85, 165, 0.2);
-        }
-
-        h2 {
-            margin-bottom: 10px;
-            font-size: 24px;
-            color: #00796b;
-        }
-
-        input[type="text"] {
-            width: calc(100% - 120px);
-            padding: 10px;
-            border: 2px solid #00796b;
-            border-radius: 5px;
-            margin-right: 10px;
-            font-size: 16px;
-        }
-
-        button {
-            padding: 10px 20px;
-            background: linear-gradient(45deg, #ff6b6b, #ff8800);
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        button:hover {
-            background-color: #ffb74d;
-            transform: scale(1.05);
-        }
-
-        #memberList ul, #matchList ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        #memberList li, #matchList li {
-            margin: 5px 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        #memberList li button {
-            background-color: #d32f2f;
-        }
-
-        #memberList li button:hover {
-            background-color: #c62828;
-        }
-
-        #generateButton {
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 20px;
-        }
-
-        #matches li {
-            margin-bottom: 15px;
-        }
-
-        #matches strong {
-            font-size: 20px;
-            color: #00796b;
-        }
-
-        #matches ul {
-            margin-top: 10px;
-        }
-
-        #matches ul li {
-            background-color: #e6f2ff;
-            border: 1px solid #00796b;
-            padding: 5px;
-            border-radius: 5px;
-        }
-
-        /* Toast Notification */
-        #toast {
-            visibility: hidden;
-            min-width: 250px;
-            margin-left: -125px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 5px;
-            padding: 16px;
-            position: fixed;
-            z-index: 1;
-            left: 50%;
-            bottom: 30px;
-            font-size: 17px;
-        }
-
-        #toast.show {
-            visibility: visible;
-            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-            animation: fadein 0.5s, fadeout 0.5s 2.5s;
-        }
-
-        @-webkit-keyframes fadein {
-            from {
-                bottom: 0;
-                opacity: 0;
-            }
-            to {
-                bottom: 30px;
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadein {
-            from {
-                bottom: 0;
-                opacity: 0;
-            }
-            to {
-                bottom: 30px;
-                opacity: 1;
-            }
-        }
-
-        @-webkit-keyframes fadeout {
-            from {
-                bottom: 30px;
-                opacity: 1;
-            }
-            to {
-                bottom: 0;
-                opacity: 0;
-            }
-        }
-
-        @keyframes fadeout {
-            from {
-                bottom: 30px;
-                opacity: 1;
-            }
-            to {
-                bottom: 0;
-                opacity: 0;
-            }
-        }
-
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-<h1>Badminton Buddy <span>V.1.0.1</span></h1>
+<div class="header">
+    <div class="logo">
+        <div class="logo-icon">🏸</div>
+        <h1>Badminton Buddy</h1>
+    </div>
+    <span class="version-badge">V.1.2.0</span>
+</div>
 
 <div class="container">
-    <h2>เพิ่มสมาชิก</h2>
-    <div style="display: flex; margin-bottom: 10px;">
-        <label for="memberName"></label><input type="text" id="memberName" placeholder="ชื่อสมาชิก">
-        <button onclick="addMember()">เพิ่มสมาชิก</button>
+    <h2><span class="material-symbols-rounded">person_add</span>เพิ่มสมาชิก</h2>
+    <div class="input-group">
+        <input type="text" id="memberName" placeholder="พิมพ์ชื่อสมาชิก..." onkeypress="if(event.key==='Enter')addMember()">
+        <button class="btn-add" onclick="addMember()">
+            <span class="material-symbols-rounded">add</span>
+            เพิ่ม
+        </button>
     </div>
     <div id="memberList">
-        <h2>รายชื่อสมาชิก</h2>
+        <h2>
+            <span class="material-symbols-rounded">groups</span>
+            รายชื่อสมาชิก
+            <span class="member-count" id="memberCount">0</span>
+        </h2>
         <ul id="members"></ul>
+        <div class="empty-state" id="emptyState">
+            <span class="material-symbols-rounded">person_off</span>
+            <p>ยังไม่มีสมาชิก</p>
+        </div>
     </div>
 </div>
 
-<button id="generateButton" onclick="generateMatches()">สุ่มทีม</button>
+<button id="generateButton" onclick="generateMatches()">
+    <span class="material-symbols-rounded">shuffle</span>
+    สุ่มทีม
+</button>
 
 <div class="container">
-    <h2>แมทช์ที่สุ่มได้</h2>
+    <h2><span class="material-symbols-rounded">sports</span>แมทช์ที่สุ่มได้</h2>
     <ul id="matches"></ul>
+    <div class="empty-state" id="matchEmptyState">
+        <span class="material-symbols-rounded">sports_tennis</span>
+        <p>กดปุ่ม "สุ่มทีม" เพื่อจับคู่</p>
+    </div>
 </div>
 
 <!-- Toast notification -->
 <div id="toast"></div>
 
-<script>
-    let members = JSON.parse(localStorage.getItem('members')) || [];
-
-    window.onload = updateMemberList;
-
-    function addMember() {
-        const nameInput = document.getElementById('memberName');
-        const name = nameInput.value.trim();
-        if (!name) return alert('กรุณาใส่ชื่อสมาชิก');
-
-        if (members.includes(name)) {
-            alert('ชื่อสมาชิกนี้มีอยู่แล้ว');
-        } else {
-            members.push(name);
-            saveAndUpdate();
-            nameInput.value = '';
-        }
-    }
-
-    function removeMember(name) {
-        members = members.filter(member => member !== name);
-        saveAndUpdate();
-    }
-
-    function saveAndUpdate() {
-        localStorage.setItem('members', JSON.stringify(members));
-        updateMemberList();
-    }
-
-    function updateMemberList() {
-        const memberList = document.getElementById('members');
-        memberList.innerHTML = '';
-        members.forEach(member => {
-            const li = document.createElement('li');
-            li.textContent = member;
-            const removeBtn = document.createElement('button');
-            removeBtn.textContent = 'ลบ';
-            removeBtn.onclick = () => removeMember(member);
-            li.appendChild(removeBtn);
-            memberList.appendChild(li);
-        });
-    }
-
-    function shuffleArray(array) {
-        return array.sort(() => Math.random() - 0.5);
-    }
-
-    function generateMatches() {
-        if (members.length < 4) return alert('ต้องมีสมาชิกอย่างน้อย 4 คนเพื่อสร้างทีม');
-
-        let players = shuffleArray([...members]);
-        const matches = [];
-
-        while (players.length) {
-            let matchPlayers = players.splice(0, 4);
-
-            if (matchPlayers.length < 4) {
-                const needed = 4 - matchPlayers.length;
-                const extraPlayers = shuffleArray([...members.filter(p => !matchPlayers.includes(p))]).slice(0, needed);
-                matchPlayers = matchPlayers.concat(extraPlayers);
-            }
-
-            matches.push({
-                team1: matchPlayers.slice(0, 2),
-                team2: matchPlayers.slice(2, 4),
-            });
-        }
-
-        displayMatches(matches);
-    }
-
-    function displayMatches(matches) {
-        const matchList = document.getElementById('matches');
-        matchList.innerHTML = '';
-
-        matches.forEach((match, index) => {
-            const li = document.createElement('li');
-            li.innerHTML = `<strong>แมทช์ที่ ${index + 1}</strong>`;
-            const ul = document.createElement('ul');
-
-            const team1 = document.createElement('li');
-            team1.textContent = `ทีม 1: ${match.team1.join(' และ ')}`;
-            ul.appendChild(team1);
-
-            const team2 = document.createElement('li');
-            team2.textContent = `ทีม 2: ${match.team2.join(' และ ')}`;
-            ul.appendChild(team2);
-
-            li.appendChild(ul);
-            matchList.appendChild(li);
-        });
-    }
-</script>
-
+<script src="js/app.js"></script>
 </body>
 </html>
